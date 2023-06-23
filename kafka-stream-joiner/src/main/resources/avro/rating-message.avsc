@@ -1,0 +1,47 @@
+{
+  "type": "record",
+  "name": "RatingMessage",
+  "namespace": "com.psychology.rating.avro",
+  "fields": [
+    {
+      "name": "RATING_ID",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "PREDICTION_ID",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "PRED_SOPEN",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "RATING",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "CREATED_AT",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+CREATE STREAM "predictions_src" WITH (KAFKA_TOPIC='mysql.psychologydb.predictions', VALUE_FORMAT='AVRO', PARTITIONS=5);
+CREATE STREAM "predictions_src_rekey" WITH (PARTITIONS=5) AS SELECT * FROM "predictions_src" PARTITION BY ID;
+
+CREATE STREAM "ratings_src" WITH (KAFKA_TOPIC='mysql.psychologydb.ratings', VALUE_FORMAT='AVRO', PARTITIONS=5);
+CREATE STREAM "ratings_src_rekey" WITH (PARTITIONS=5) AS SELECT * FROM "ratings_src" PARTITION BY ID;
+
+CREATE TABLE "predictions_table" (id BIGINT PRIMARY KEY, pred_sopen VARCHAR, created_at BIGINT, updated_at BIGINT) WITH (KAFKA_TOPIC='predictions_src_rekey', VALUE_FORMAT='AVRO', PARTITIONS=5);
+CREATE STREAM "ratings_stream" (id BIGINT KEY, rating VARCHAR, created_at BIGINT, updated_at BIGINT, prediction_id BIGINT) WITH (KAFKA_TOPIC='ratings_src_rekey', VALUE_FORMAT='AVRO', PARTITIONS=5);
+
+CREATE STREAM "ratings_predictions" WITH (PARTITIONS=5) AS SELECT A.id AS ROWKEY, AS_VALUE(A.id) AS rating_id, A.rating AS rating, B.id AS prediction_id, B.pred_sopen AS pred_sopen, A.created_at AS created_at FROM "ratings_stream" A LEFT JOIN "predictions_table" B ON A.prediction_id = B.id PARTITION BY A.id;

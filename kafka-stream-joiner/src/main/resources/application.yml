@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: kafka-research-consumer
+
+  kafka:
+    bootstrap-servers: localhost:29092
+    properties:
+      schema-registry-url: http://${SCHEMA_REGISTRY_HOST:localhost}:${SCHEMA_REGISTRY_PORT:8081}
+    consumer:
+      client-id: kafka-research-consumer-1
+      group-id: kafka-research-consumer-group
+      topic: ratings_predictions
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 100
+    listener:
+      ack-mode: MANUAL
+      concurrency: 2
+  data:
+    elasticsearch:
+      cluster-nodes: ${ELASTICSEARCH_HOST:localhost}:${ELASTICSEARCH_PORT:9300}
+  elasticsearch:
+    rest:
+      uris: http://${ELASTICSEARCH_HOST:localhost}:${ELASTICSEARCH_REST_PORT:9200}
+
+management:
+  endpoints:
+    web:
+      exposure.include: beans, env, health, info, metrics, mappings
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  port: 9083
